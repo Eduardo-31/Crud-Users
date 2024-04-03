@@ -36,7 +36,10 @@ const UsersList = ({user, setUpdate, setShowForm, reset, setTrash}) => {
             <h3> {user.first_name} {user.last_name} </h3>
             <span>email: </span>
             <p> {user.email} </p>
-            <p> <i className="fa-solid fa-cake-candles"></i> {user.birthday} </p>
+            {
+              user.birthday && 
+              <p> <i className="fa-solid fa-cake-candles"></i> {user.birthday} </p>
+            }
             <div className='card-icons'>
               <button className='card-icon-delete' onClick={cardDelete}><i className="fa-solid fa-trash-can"></i></button>
               <button className='card-icon-update' onClick={updateUser}><i className="fa-solid fa-pen-to-square"></i></button>      

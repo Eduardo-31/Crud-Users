@@ -12,10 +12,10 @@ function App() {
   const [update, setUpdate] = useState()
   const [showForm, setShowForm] = useState(false)
   const [trash, setTrash] = useState(false)
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, formState:{errors}, watch,setValue } = useForm();
 
 
-  const URL = 'https://users-crud1.herokuapp.com/users/'
+  const URL = 'https://users-crud.academlo.tech/users/'
 
   // obteniendo todos los users
   const getAllUsers = () => {
@@ -32,29 +32,21 @@ function App() {
   // function create
   const createUser = (data) => {
     axios.post(URL, data)
-    .then(res => { console.log(res.data)
-        getAllUsers()
-    })
+    .then(res => getAllUsers())
     .catch(err => console.log(err))
   }
   
   // function delete
   const deleteUser = (id) => {
     axios.delete(`${URL}${id}/`)
-    .then(res => { console.log(res.data)
-        getAllUsers()
-    })
+    .then(res => getAllUsers())
     .catch(err => console.log(err))
   }
 
   // function patch
-  const patchUser = (id, date) => {
-
-    axios.patch(`${URL}${id}/`, date)
-    .then(res => { console.log(res.data)
-        getAllUsers()
-        
-    })
+  const patchUser = (id, data) => {
+    axios.patch(`${URL}${id}/`, data)
+    .then(res =>  getAllUsers())
     .catch(err => console.log(err))
   }
 
@@ -99,6 +91,9 @@ function App() {
       getAllUsers={getAllUsers}
       setUpdate={setUpdate}
       isShow={isShow}
+      errors={errors}
+      watch={watch}
+      setValue={setValue}
       />
       }
         
@@ -143,7 +138,6 @@ function App() {
         </div>
       </footer>
 
-    
 
     </div>
   )
