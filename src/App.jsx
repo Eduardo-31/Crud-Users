@@ -133,7 +133,6 @@ function App() {
             <a className='footer-a' href="#"><i className="fa-brands fa-linkedin-in"></i></a>
           </div>
             <p>Made by eduardo izacupe</p>
-            <p>Copyright 2022</p>
             <p>All rights reserved</p>
         </div>
       </footer>
