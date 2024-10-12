@@ -76,14 +76,35 @@ h1:hover {
   max-width: 1450px;
 }
 
-.input-search {
+.input-search-container {
   flex: 1;
-  padding: 6px 20px;
+  position: relative;
+}
+
+.input-search-icon-clean {
+  position: absolute;
+  right: 15px;
+  display: flex;
+  padding: 0px 4px;
+  top: 50%;
+  margin: 0px;
+  transform: translateY(calc(-50% - 2px));
+  color: rgb(247, 247, 247);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1.05rem;
+}
+
+.input-search {
+  width: 100%;
+  height: 100%;
+  padding: 6px 43px 6px 20px;
   font-size: 1rem;
   border-bottom: solid 2px #e91e63;
   color: white;
   background: #373a3a;
   border-radius: 10px;
+  position: relative;
 }
 
 .input-search::placeholder {
@@ -97,10 +118,6 @@ h1:hover {
     gap: 6px;
     font-size: 16px;
     font-weight: 600;
-    background: #9fa1a1;
-    background: #3fada8;
-    background: #6A82FB;
-    background: #e91e63;
     background: crimson;
     color: white;
     border-radius: 10px;
@@ -674,9 +691,15 @@ footer {
   }
 
   .input-search {
-    padding: 6px 11px;
+    padding: 6px 39px 6px 11px;
     font-size: .95rem;
   }
+
+  .input-search-icon-clean {
+    right: 12px;
+    font-weight: 500;
+  }
+
 
   .card-new-create {
     padding-top: 23px;
@@ -708,7 +731,7 @@ footer {
   }
 
   .input-search {
-    padding: 8px 13px;
+    padding: 8px 40px 8px 13px;
   }
 
 }

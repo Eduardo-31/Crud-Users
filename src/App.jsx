@@ -9,6 +9,7 @@ import UsersList from './components/UsersList'
 function App() {
 
   const [users, setUsers] = useState()
+  const [search, setSearch] = useState('')
   const [update, setUpdate] = useState()
   const [showForm, setShowForm] = useState(false)
   const [trash, setTrash] = useState(false)
@@ -20,7 +21,7 @@ function App() {
   const API_URL = 'https://crud-user-single.onrender.com/api/v1/users/'
 
   // obteniendo todos los users
-  const getAllUsers = () => {
+  const   getAllUsers = () => {
     axios.get(API_URL)
     .then(res => setUsers(res.data))
     .catch(err => console.log(err))
@@ -55,10 +56,8 @@ function App() {
       rootMargin: '0px'
     })
 
-    
     const lastElement = containerListRef.current.children[users.users.length -1]
-    console.log(lastElement)
-    console.log(containerListRef.current.children.length)
+    console.log(Element)
     observer.observe(lastElement)
   }, [users])
   
@@ -68,7 +67,7 @@ function App() {
   // function create
   const createUser = (data) => {
     axios.post(API_URL, data)
-    .then(res => console.log('exitoso'))
+    .then(res => getAllUsers())
     .catch(err => console.log(err))
   }
 
@@ -102,15 +101,18 @@ function App() {
 
   const searchUser = (e) => {
     const value = e.target.value.replace(/\s\s+/g, ' ').toLowerCase()
-    if(value){
-      console.log('PETICION')
-      axios.get(`${API_URL}/?q=${value}`)
+    console.log(value)
+    setSearch(e.target.value)
+    if(value.trim()){
+      console.log('---')
+      axios.get(`${API_URL}/?q=${encodeURIComponent(value)}`)
         .then(res => {
-          console.log(res.data)
+          console.log('exito')
           setUsers(res.data)
         })
         .catch(err => console.log(err))
     }
+
     if(!value){
       getAllUsers()
     }
@@ -125,7 +127,15 @@ function App() {
           <h1>USER MANAGEMENT</h1>
         </div>
         <div className='card-new-create'>
-          <input className='input-search' type="text" onChange={searchUser} placeholder='Search by name or email' />
+          <div className='input-search-container'>
+            <input value={search} className='input-search' type="text" onChange={searchUser} placeholder='Search by name or email' />
+            { search && <span onClick={() => { 
+                setSearch('')
+                getAllUsers() 
+              }} 
+              className='input-search-icon-clean'>&#120;</span>
+            }
+          </div>
           <button className='button-new-create' onClick={isShow} ><i className="fa-solid fa-plus"></i>Create New User</button>
         </div>
       </header>
@@ -159,23 +169,23 @@ function App() {
         }
         
       <div style={{ flex: '1', paddingBottom: '20px'}}>
-        <main ref={containerListRef} className='container-grid'>
-          
-            <>
-            {users?.users.map(user => (
-              <UsersList 
-              user={user}
-              key={user.id}
-              setUpdate={setUpdate}
-              setShowForm={setShowForm}
-              reset={reset}
-              setTrash={setTrash}
-              />
-            ))}
 
-            </>
-          
-        </main>
+            <main ref={containerListRef} className='container-grid'>
+              {
+                users?.users.map(user => (
+                  <UsersList 
+                  user={user}
+                  key={user.id}
+                  setUpdate={setUpdate}
+                  setShowForm={setShowForm}
+                  reset={reset}
+                  setTrash={setTrash}
+                  />
+                ))
+              }
+            </main>
+
+
       </div>
       <footer>
         <div className='footer-content'>
