@@ -22,7 +22,8 @@ body {
 
 .App {
   min-height: 100vh;
-  
+  display: flex;
+  flex-direction: column;
  margin: 0;
  padding: 0;
 }
@@ -56,22 +57,38 @@ h1 {
   font-size: 1.5rem;
   font-weight: 800;
   color: rgb(255, 255, 255) ;
-  text-shadow: 1px 1px 20px rgb(0, 0, 0);
+  text-shadow: solid  solid  20px rgb(0, 0, 0);
   transition: all 0.5s ease;
 }
 
 h1:hover {
   transition: all 0.5s ease;
-  transform:scale(1.1);
+  transform: scale(1.1);
   text-shadow: 1 1 10px #e91e63;
   cursor: pointer;
 }
 
 .card-new-create {
   display: flex;
-  padding-top: 20px;
-  width: 70%;
-  justify-content: flex-end;
+  padding-top: 40px;
+  gap: 15px 80px ;
+  width: 84%;
+  max-width: 1450px;
+}
+
+.input-search {
+  flex: 1;
+  padding: 6px 20px;
+  font-size: 1rem;
+  border-bottom: solid 2px #e91e63;
+  color: white;
+  background: #373a3a;
+  border-radius: 10px;
+}
+
+.input-search::placeholder {
+  color: rgb(138, 132, 132);
+  font-weight: 500;
 }
 
 .button-new-create {
@@ -87,16 +104,16 @@ h1:hover {
     background: crimson;
     color: white;
     border-radius: 10px;
-    padding: 6px 20px;
+    padding: 8px 20px;
     cursor: pointer;
     border: transparent;
-    transition: all 0.5s ease;
+    transition: box-shadow .2s ease, transform  .2s ease;
+    width: max-content;
     
 }
 
 .button-new-create:hover  {
-  box-shadow: 1px 1px 5px rgb(216, 213, 213);
-  transition: all 0.4s ease;
+  box-shadow: solid  solid  5px rgb(216, 213, 213);
   transform: scale(1.02);
 }
 
@@ -109,84 +126,58 @@ h1:hover {
 
  /* ====== Main - Articles ===== */
 
- main {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 25px;
-  width: 80%;
-  min-height: 530px;
-  max-width: 1400px;
-  flex-wrap: wrap;
+ .container-grid {
+  gap: 21px;
+  width: 84%;
+  max-width: 1450px;
   margin: 0 auto;
-  padding: 30px 0;
+  padding: 40px 0 80px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(310px,1fr));
 }
 
 
 .article-users-list {
   border-top: solid 3px #e91e63;
-  padding: 25px;
-  border-radius: 5px;
-  transition: all 0.6s ease;
+  padding: 22px 28px;
+  transition: border-radius .2s, transform .25s ease;
   background: linear-gradient(to right, #abbaab, #ffffff); 
     background: linear-gradient(to right, #ece9e6, #ffffff);
-    background: linear-gradient(to right, #c9d6ff, #e2e2e2); 
-    
-  min-height: 130px;
-  min-width: 220px;
-  cursor: pointer;
+    background: #00000030;
 
+    background: rgb(245, 245, 245);
+    background: linear-gradient(to right, #c9d6ff, #e2e2e2); 
+  cursor: pointer;
   display: flex;
   flex-direction: column;
   justify-content: center;
-
-  overflow-wrap: break-word;
-  
-  
+  gap: 5px;
+  overflow-wrap: anywhere;
 }
 
 .article-users-list:hover {
-  transition: all 0.4s ease;
-  transform: scale(1.07);
-  border-radius: 13px;
-  box-shadow: 2px 4px 5px rgba(250, 248, 248, 0.288);
+  transform: translateY(-9px);
+  border-radius: 0 0 15px 15px;
 }
 
-.article-users-list p{
+.article-users-list p {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   font-size: 1rem;
   font-weight: 500;
   margin: 2px 0;
 }
 
 .article-users-list i {
-  padding-right: 3px;
   font-size: 15px;
 }
-
-.article-users-list span {
-  font-size: 14px;
-  font-weight: 600;
-  font-style: italic;
-  color: rgb(59, 59, 59);
-  margin: -1px 0;
-}
-
-h3 {
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: #24262bfb;
-  margin: 0.5px 0 2px 0;
-}
-
-
 
 .card-icons {
   width: 100%;
   display: flex;
   justify-content: flex-end;
   gap: 15px;
-  margin-top: 3px;
-  align-items: flex-end;
   flex: 1;
 }
 
@@ -199,6 +190,7 @@ h3 {
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: box-shadow .3s ease;
 }
 
 .card-icon-delete{
@@ -207,20 +199,19 @@ h3 {
 
 .card-icon-update{
   background-color: #0082c8;
-  margin-right: 2px;
 }
 
 .card-icons button i {
-  font-size: 15px;
+  font-size: 14.5px;
   color: rgb(255, 247, 248);
-  padding: 0;
-  margin: 0;
 }
 
 .card-icon-update:hover, .card-icon-delete:hover {
-  box-shadow: 1px 1px 5px rgb(3, 3, 3);
-  transition: all 0.4s ease;
+  box-shadow: solid  solid  5px rgb(8, 8, 8);
 }
+
+
+
   /* ====== Form ====== */
  
 .section-form {
@@ -239,33 +230,13 @@ h3 {
 form{
   display: flex; 
   flex-direction: column;
-  background-color: white;
-  width: 34%;
+  width: min(34%, 540px);
   min-height: 60%;
   align-items: center;
   border-radius: 5px;
-  box-shadow: 0 0 px rgba(235, 235, 235, 0.705);
+  box-shadow: 0 0 4px solid  rgba(168, 166, 166, 0.705);
   animation: isShowForm 250ms ease-in-out;
 }
-
-@keyframes isShowForm {
-
-  from {
-    transform: scale(0);
-  }
-  to {
-    transform: scale(1);
-  }
-
-}
-
-/*
-i-close{
-  position: absolute;
-  background-color: transparent;
-  border: transparent;
-}
-*/
 
 .form-title {
   display: flex;
@@ -273,10 +244,9 @@ i-close{
   justify-content: space-between;
   width: 80%;
   margin: 0 auto;
-  padding: 14px 20px;
+  padding: 15px 20px;
   border-radius: 5px 5px 0 0;
   box-sizing: border-box;
-  /*overflow-wrap: break-word;*/
 }
 
 .form-content{
@@ -287,13 +257,15 @@ i-close{
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 10px 20px;
-  padding-bottom: 20px;
+  padding: 15px 20px 35px 20px;
 }
 
 
 h2 {
   font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 h2 i {
   font-size: 1.6rem;
@@ -312,7 +284,7 @@ h2 i {
 
 .form-l-i {
   width: 100%;
-  margin: 10px 0;
+  margin: 12px 0;
   display: flex;
   flex-direction: column;
 }
@@ -321,20 +293,19 @@ h2 i {
   border: transparent;
   padding: 5px 9px;
   font-size: 1.1rem;
-  background-color: #3fada8;
   color: white;
   width: 230px;
-  height: 43px;
+  height: 45px;
   cursor: pointer;
   border-radius: 25px;
-  margin-top: 8px;
+  margin-top: 9px;
   transition: all 0.3s ease;
   width: 100%;
   box-sizing: border-box;
 }
 
 .button-submit:hover {
-  box-shadow: 1px 1px 5px rgb(46, 46, 46);
+  box-shadow: solid  solid  5px rgb(46, 46, 46);
   transform: scale(1.01);
   transition: all 0.3s ease;
 }
@@ -375,17 +346,13 @@ input {
   box-sizing: border-box;
 }
 
-/* className - Create */
+/* ---- Create -----*/
 .form-title-create {
   width: 100%;
-  background: black;
   color: white;
 }
-.form-content-create {
-  background: black;
-}
 .form-create {
-  background: black;
+  background: #0f0f10;
 }
 .label-create {
   color: white;
@@ -398,25 +365,28 @@ input {
   background-color: transparent;
   color: rgb(255, 255, 255);
 }
+
+.input-create[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
 .button-submit-create {
   background: crimson;
   color: white;
 }
 
-/* className - Update */
+/* ---- Update ---- */
 .form-title-update {
   width: 100%;
   background: #0066ff;
   color: white;
 }
-.form-content-update {
-  background: ghostwhite;
-}
 .form-update {
-  background-color: ghostwhite;
+  background: white;
 }
 .label-update {
   color: rgb(15, 15, 15);
+  color: #0f0f10;
 }
 .label-update i {
   color: #0066ff;
@@ -425,6 +395,8 @@ input {
   border-bottom: solid 2px #0066ffee;
   background-color: transparent;
   color: rgba(19, 19, 19, 0.918);
+  color: rgb(15, 15, 15);
+  color: #333336;
 }
 .button-submit-update {
   background: #0066ff;
@@ -436,7 +408,6 @@ input {
   color: crimson;
   padding: 3px 0 0;
   font-weight: 500;
-  letter-spacing: -.1px;
 }
 
 
@@ -462,7 +433,6 @@ input {
   justify-content: center;
   align-items: center;
   gap: 30px;
-  background: white;
   width: 25%;
   min-height: 40%;
   border-radius: 10px;
@@ -471,7 +441,9 @@ input {
   font-weight: 600;
   padding: 30px;
   text-align: center;
+  background-color: white;
   color: rgb(129, 129, 129);
+  animation: isShowForm 250ms ease-in-out;
 }
 
 .card-trash-button {
@@ -499,7 +471,7 @@ input {
 }
 
 .button-accept:hover, .button-cancel:hover {
-  box-shadow: 1px 1px 5px rgb(46, 46, 46);
+  box-shadow: solid  solid  5px rgb(46, 46, 46);
   transform: scale(1.04);
   transition: all 0.5s ease;
 }
@@ -509,9 +481,9 @@ input {
   color: rgb(202, 31, 31);
 }
 
-/*=============*/
 
 
+/* ====== FOOTER ======= */
 
 footer {
   /*background-color: #24262b;*/
@@ -579,17 +551,22 @@ footer {
 }
 
 
+@keyframes isShowForm {
+
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+
+}
 
 /* ========= Media  ========= */
 
 @media (max-width: 1500px){
-
-  main {
-    min-height: 510px;
-  }
-
   form{
-    width: 38%;
+    width: 37%;
   }
   .card-trash {
     width: 27%;
@@ -597,45 +574,83 @@ footer {
 }
 
 @media (max-width: 1200px){
-
-  main {
-    min-height: 460px;
-  }
   form{
     width: 45%;
   }
   .card-trash { 
     width: 32%;
   }
+  .card-new-create {
+    gap: 15px 60px ;
+    padding-top: 30px;
+  }
 }
 
 @media (max-width: 900px){
-
-  main {
-    min-height: 410px;
-  }
   form{
-    width: 55%;
+    width: 54%;
   }
   .card-trash { 
     width: 40%; 
   }
+
+  .card-new-create {
+    padding-top: 27px;
+  }
 }
 
-@media (max-width: 750px){
+@media (max-width: 768px){
   .form-title,
   .form-content {
     width: 84%;
   }
 
-  main {
-    min-height: 380px;
+
+  .container-grid {
+    gap: 17px;
+    width: 84%;
+    padding: 40px 0 80px;
+    grid-template-columns: repeat(auto-fit,minmax(270px,1fr));
   }
+
+  .article-users-list {
+    padding: 18px 22px;
+    gap: 3px;
+  }
+
+  .article-users-list:hover {
+    transform: translateY(-7px);
+  }
+  
+  .article-users-list p {
+    font-size: .95rem;
+  }
+  
+  .article-users-list i {
+    font-size: 12.5px;
+  }
+  
+  .card-icons {
+    gap: 13px;
+  }
+  
+  .card-icon-delete, .card-icon-update {
+    height: 28px;
+    width: 28px;
+  }
+  .card-icons button i {
+    font-size: 13px;
+  }
+
+
+
+
+
   h1 {
-    font-size: 1.3rem;
+    font-size: 1.25rem;
   }
   form{
-    width: 68%;
+    width: 66%;
   }
   h2 {
     font-size: 1.3rem;
@@ -647,23 +662,32 @@ footer {
     font-size: 1.3rem;
   }
   .button-new-create {
-    padding: 6px 10px;
-    font-size: 15px;
+    padding: 6px 13px;
+    font-size: .9rem;
+  }
+  .button-new-create i {
+    font-size: .9rem;
   }
   .card-trash {
     width: 50%;
     padding: 13px;  
   }
+
+  .input-search {
+    padding: 6px 11px;
+    font-size: .95rem;
+  }
+
+  .card-new-create {
+    padding-top: 23px;
+  }
+
 }
 
 @media (max-width: 600px){
 
-  main {
-    min-height: 350px;
-  }
-
   form{
-    width: 79%;
+    width: 76%;
   }
 
   .form-title,
@@ -674,29 +698,45 @@ footer {
   .card-trash { 
     width: 60%;
   }
+
+  .card-new-create {
+    flex-direction: column;
+  }
+
+  .button-new-create {
+    margin-left: auto;
+  }
+
+  .input-search {
+    padding: 8px 13px;
+  }
+
 }
 
 
 
 @media (max-width: 540px){
 
-  main {
-    min-height: 330px;
-  }
   h1 {
-    font-size: 1.2rem;
+    font-size: 1.15rem;
   }
   form{
-    width: 95%;
+    width: 85%;
   }
   .form-title,
   .form-content {
     width: 95%;
   }
+  
   .button-new-create {
-    padding: 5px 7px;
-    font-size: 14px;
+    font-size: .85rem;
+
   }
+
+  .button-new-create i {
+    font-size: .85rem;
+  }
+
   .card-trash { 
     width: 67%;
   }
@@ -704,8 +744,8 @@ footer {
 
 @media (max-width: 440px){
 
-  main {
-    min-height: 310px;
+  form{
+    width: 92%;
   }
   
   .card-trash { 
