@@ -5,6 +5,9 @@ import './App.css'
 import Trash from './components/Trash'
 import UsersForm from './components/UsersForm'
 import UsersList from './components/UsersList'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function App() {
 
@@ -13,7 +16,7 @@ function App() {
   const [update, setUpdate] = useState()
   const [showForm, setShowForm] = useState(false)
   const [trash, setTrash] = useState(false)
-  const { register, handleSubmit, reset, formState:{errors}, watch,setValue, setError, clearErrors } = useForm();
+  const { register, handleSubmit, reset, formState:{errors}, setValue } = useForm();
 
   const containerListRef = useRef()
 
@@ -21,7 +24,7 @@ function App() {
   const API_URL = 'https://crud-user-single.onrender.com/api/v1/users/'
 
   // obteniendo todos los users
-  const   getAllUsers = () => {
+  const getAllUsers = () => {
     axios.get(API_URL)
     .then(res => setUsers(res.data))
     .catch(err => console.log(err))
@@ -34,31 +37,25 @@ function App() {
   useEffect(() => {
     if(!users || !users?.info.nextPage) return
     const onChange = (entries, observer) => {
-      console.log(entries[0])
       if(entries[0].isIntersecting){
-        console.log('TRUEEEEEEE')
-        
         axios.get(users.info.nextPage)
-          .then(res => setUsers(state => {
-            const data = res.data
-            const obj = {
-              ...data,
-              users: state.users.concat(data.users)
-            }
-            return obj
-           }))
-          .catch(err => console.log('ERROR INTERSETCUION'))
-          observer.disconnect()
+          .then(res => {
+            setUsers(state => ({
+              ...res.data,
+              users: state.users.concat(res.data.users)
+            }))
+          })
+        observer.disconnect()
       }
     }
   
     const observer = new IntersectionObserver(onChange, {
       rootMargin: '0px'
     })
-
     const lastElement = containerListRef.current.children[users.users.length -1]
-    console.log(Element)
     observer.observe(lastElement)
+
+    return () => observer.disconnect();
   }, [users])
   
 
@@ -67,7 +64,10 @@ function App() {
   // function create
   const createUser = (data) => {
     axios.post(API_URL, data)
-    .then(res => getAllUsers())
+    .then(res => {
+      toast.success('User created successfully')
+      getAllUsers()
+    })
     .catch(err => console.log(err))
   }
 
@@ -81,7 +81,10 @@ function App() {
   // function patch
   const patchUser = (id, data) => {
     axios.patch(`${API_URL}${id}`, data)
-      .then(res =>  getAllUsers())
+      .then(res =>  {
+        getAllUsers()
+        toast.info('User updated successfully')
+      })
       .catch(err => console.log(err))
   }
 
@@ -139,37 +142,7 @@ function App() {
           <button className='button-new-create' onClick={isShow} ><i className="fa-solid fa-plus"></i>Create New User</button>
         </div>
       </header>
-    <div>
-    </div>
-
-      { 
-      showForm &&
-      <UsersForm
-        register={register}
-        handleSubmit={handleSubmit}
-        createUser={createUser}
-        update={update}
-        patchUser={patchUser}
-        setShowForm={setShowForm}
-        setUpdate={setUpdate}
-        errors={errors}
-        setValue={setValue}
-      />
-      }
-        
-     
-        {
-          trash && 
-          <Trash 
-          update={update}
-          deleteUser={deleteUser}
-          setTrash={setTrash}
-          setUpdate={setUpdate}
-          />
-        }
-        
       <div style={{ flex: '1', paddingBottom: '20px'}}>
-
             <main ref={containerListRef} className='container-grid'>
               {
                 users?.users.map(user => (
@@ -184,9 +157,30 @@ function App() {
                 ))
               }
             </main>
-
-
       </div>
+      { 
+        showForm &&
+        <UsersForm
+          register={register}
+          handleSubmit={handleSubmit}
+          createUser={createUser}
+          update={update}
+          patchUser={patchUser}
+          setShowForm={setShowForm}
+          setUpdate={setUpdate}
+          errors={errors}
+          setValue={setValue}
+        />
+      }
+      {
+        trash && 
+        <Trash 
+        update={update}
+        deleteUser={deleteUser}
+        setTrash={setTrash}
+        setUpdate={setUpdate}
+        />
+      }
       <footer>
         <div className='footer-content'>
           <div className='footer-icon'>
@@ -198,8 +192,8 @@ function App() {
             <p>All rights reserved</p>
         </div>
       </footer>
-
-
+      
+    <ToastContainer autoClose={2700} theme="dark"/>
     </div>
   )
 }

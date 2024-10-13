@@ -2,9 +2,6 @@ import React from 'react'
 
 const Trash = ({setTrash, update, deleteUser, setUpdate}) => {
 
-
-
-
   return (
     <section className='container-trash'>
         <article className='card-trash'>
