@@ -7,18 +7,23 @@ import UsersForm from './components/UsersForm'
 import UsersList from './components/UsersList'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
+import Footer from './components/Footer'
+import UsersPlaceholders from './components/UsersPlaceholders'
 
+const INITIAL_QUANTITY = 36
 
 function App() {
 
   const [users, setUsers] = useState()
   const [search, setSearch] = useState('')
+  const [loading, setLoading] = useState(false)
   const [update, setUpdate] = useState()
   const [showForm, setShowForm] = useState(false)
   const [trash, setTrash] = useState(false)
   const { register, handleSubmit, reset, formState:{errors}, setValue } = useForm();
 
   const containerListRef = useRef()
+  const cancelToken = useRef(false)
 
 //https://users-crud.academlo.tech/users
   const API_URL = 'https://crud-user-single.onrender.com/api/v1/users/'
@@ -38,6 +43,7 @@ function App() {
     if(!users || !users?.info.nextPage) return
     const onChange = (entries, observer) => {
       if(entries[0].isIntersecting){
+        setLoading(true)
         axios.get(users.info.nextPage)
           .then(res => {
             setUsers(state => ({
@@ -45,7 +51,8 @@ function App() {
               users: state.users.concat(res.data.users)
             }))
           })
-        observer.disconnect()
+          .finally(() => setLoading(false))
+          observer.disconnect()
       }
     }
   
@@ -54,18 +61,16 @@ function App() {
     })
     const lastElement = containerListRef.current.children[users.users.length -1]
     observer.observe(lastElement)
-
     return () => observer.disconnect();
   }, [users])
   
-
-
 
   // function create
   const createUser = (data) => {
     axios.post(API_URL, data)
     .then(res => {
-      toast.success('User created successfully')
+      setSearch('')
+      toast.success('User successfully created')
       getAllUsers()
     })
     .catch(err => console.log(err))
@@ -74,21 +79,24 @@ function App() {
   // function delete
   const deleteUser = (id) => {
     axios.delete(`${API_URL}${id}`)
-      .then(res => getAllUsers())
-      .catch(err => console.log(err))
-  }
-
-  // function patch
-  const patchUser = (id, data) => {
-    axios.patch(`${API_URL}${id}`, data)
-      .then(res =>  {
+    .then(res => {
+        setSearch('')
+        toast.success('User successfully deleted')
         getAllUsers()
-        toast.info('User updated successfully')
+      })
+      .catch(err => console.log(err))
+    }
+    
+    // function patch
+    const patchUser = (id, data) => {
+      axios.patch(`${API_URL}${id}`, data)
+      .then(res =>  {
+        setSearch('')
+        toast.info('User successfully updated')
+        getAllUsers()
       })
       .catch(err => console.log(err))
   }
-
-
 
   const isShow = () => {
     const obj = {
@@ -103,26 +111,28 @@ function App() {
 
 
   const searchUser = (e) => {
-    const value = e.target.value.replace(/\s\s+/g, ' ').toLowerCase()
-    console.log(value)
     setSearch(e.target.value)
-    if(value.trim()){
-      console.log('---')
-      axios.get(`${API_URL}/?q=${encodeURIComponent(value)}`)
-        .then(res => {
-          console.log('exito')
-          setUsers(res.data)
-        })
-        .catch(err => console.log(err))
+    const value =  e.target.value.replace(/\s\s+/g, ' ')
+    if(cancelToken.current){
+      cancelToken.current.cancel("Nueva búsqueda, se cancela la anterior.")
     }
 
-    if(!value){
-      getAllUsers()
-    }
+    if(value.trim() != search.replace(/\s\s+/g, ' ').trim()) { 
+      cancelToken.current = axios.CancelToken.source()
+      axios.get(`${API_URL}/?q=${encodeURIComponent(value)}`, {
+        cancelToken: cancelToken.current.token
+      })
+        .then(res => setUsers(res.data))
+        .catch(err => console.error(err))
+      }
 
+      if(!value){
+        getAllUsers()
+      }
   }
+  
+  const arrPlaceholders = Array.from({ length: INITIAL_QUANTITY}, ((_,index) => `placeholder-${index}`))
 
- 
   return (
     <div className="App">
       <header>
@@ -132,7 +142,7 @@ function App() {
         <div className='card-new-create'>
           <div className='input-search-container'>
             <input value={search} className='input-search' type="text" onChange={searchUser} placeholder='Search by name or email' />
-            { search && <span onClick={() => { 
+            { search && <span translate='no' onClick={() => { 
                 setSearch('')
                 getAllUsers() 
               }} 
@@ -143,20 +153,36 @@ function App() {
         </div>
       </header>
       <div style={{ flex: '1', paddingBottom: '20px'}}>
-            <main ref={containerListRef} className='container-grid'>
-              {
-                users?.users.map(user => (
-                  <UsersList 
-                  user={user}
-                  key={user.id}
-                  setUpdate={setUpdate}
-                  setShowForm={setShowForm}
-                  reset={reset}
-                  setTrash={setTrash}
-                  />
-                ))
-              }
-            </main>
+            {
+              (search && users?.info.count === 0) ?
+                <div className='not-results'>No results found for <span>{search.replace(/\s\s+/g, ' ').trim()}</span></div>
+              :
+              <main ref={containerListRef} className='container-grid'>
+                {
+                  !users ? 
+                    arrPlaceholders.map(item => (
+                      <UsersPlaceholders key={ item}/>
+                    ))
+                  :
+                  users.users.map(user => (
+                    <UsersList 
+                      key={user.id}
+                      user={user}
+                      setUpdate={setUpdate}
+                      setShowForm={setShowForm}
+                      reset={reset}
+                      setTrash={setTrash}
+                    />
+                  ))
+                }
+              </main>
+            }
+            
+            {
+              loading &&
+              <span class="loader"></span>
+            }
+            
       </div>
       { 
         showForm &&
@@ -181,19 +207,10 @@ function App() {
         setUpdate={setUpdate}
         />
       }
-      <footer>
-        <div className='footer-content'>
-          <div className='footer-icon'>
-            {/*<a className='footer-a' href="#"><i className="fa-brands fa-instagram"></i></a>*/}
-            <a className='footer-a' href="#"><i className="fa-brands fa-github"></i></a>
-            <a className='footer-a' target='blank' href="https://github.com/Eduardo-31/Crud-Users.git"><i className="fa-brands fa-linkedin-in"></i></a>
-          </div>
-            <p>Made by eduardo izacupe</p>
-            <p>All rights reserved</p>
-        </div>
-      </footer>
-      
-    <ToastContainer autoClose={2700} theme="dark"/>
+
+      <Footer />
+
+      <ToastContainer autoClose={2700} theme="dark"/>
     </div>
   )
 }

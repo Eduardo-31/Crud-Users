@@ -3,18 +3,16 @@ import React from 'react'
 const UsersForm = ({register, handleSubmit, createUser, update, patchUser, setShowForm, setUpdate, errors, setValue}) => {
 
     const submit = (data) => {
-      console.log('DATA',data)
       if(!update){ 
         createUser(data)
         setShowForm(false)
       } else {
         patchUser(update.id, data)
         setShowForm(false)  
-        setUpdate(null)    
+        setUpdate(null)
       }
     }
 
-    console.log('first')
     const closeCreate = () =>{
       setShowForm(false)
       setUpdate(null)

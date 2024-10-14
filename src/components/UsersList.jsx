@@ -4,7 +4,6 @@ const UsersList = ({user, setUpdate, setShowForm, reset, setTrash}) => {
 
 
   const updateUser = () => {
-    setShowForm(true)
     const obj = {
       firstName: user.firstName,
       lastName: user.lastName,
@@ -12,6 +11,7 @@ const UsersList = ({user, setUpdate, setShowForm, reset, setTrash}) => {
       birthdate: user.birthdate
     }
     reset(obj)
+    setShowForm(true)
     setUpdate(user)
   }
 
